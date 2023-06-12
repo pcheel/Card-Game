@@ -2,15 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Card : MonoBehaviour, ICard
+public class Card : ICard
 {
-    public void Inizialize(CardData data)
-    {
-        // throw new System.NotImplementedException();
-    }
+    private CardView _cardView;
 
-    public void UseCard()
+    public CardView cardView => _cardView;
+
+    public void Inizialize(IFactory factory, GameObject cardPrefab, Transform parent, CardData data)
     {
-        // throw new System.NotImplementedException();
+        _cardView = factory.CreateCardView(cardPrefab, parent);
     }
+    public void UseCard(){}
 }

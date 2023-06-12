@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class CardManager : MonoBehaviour
 {   
+    [Header("Dependencies")]
+    [SerializeField] private CardsPositionController _cardsPositionController;
+    
+    [Header("Prefabs")]
     [SerializeField] private GameObject _cardPrefab;
 
     private List<ICard> _playerCardsInHand;
@@ -34,10 +38,22 @@ public class CardManager : MonoBehaviour
     {
         for (int i = 0; i < cardDatas.Count; i++)
         {
-            ICard card = factory.CreateCard(_cardPrefab, transform);
-            card.Inizialize(cardDatas[i]);
-            _playerCardsInHand.Add(card);
+            if (_playerCardsInHand.Count < MAX_CARDS_IN_HAND)
+            {
+                ICard card = factory.CreateCardModel();
+                card.Inizialize(factory, _cardPrefab, transform, cardDatas[i]);
+                _playerCardsInHand.Add(card);
+            }
+            else
+            {
+                _discardDeck.Add(cardDatas[i]);
+            }
         }
+        _cardsPositionController.RefreshCardsInHand(_playerCardsInHand);
+    }
+    public void SetTakingDeck(List<CardData> newTakingDeck)
+    {
+        _takingDeck = new List<CardData>(newTakingDeck);
     }
 
     private void SuffleCardsFromDiscardDeckToTakingDeck()

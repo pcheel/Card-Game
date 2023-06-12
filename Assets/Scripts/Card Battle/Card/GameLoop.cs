@@ -4,31 +4,36 @@ using UnityEngine;
 
 public class GameLoop : MonoBehaviour
 {
+    [Header("Dependencies")]
     [SerializeField] private CardManager _cardManager;
     [SerializeField] private CharacterManager _characterManager;
+    [SerializeField] private CardGameLoader _cardGameLoader;
+
+    [Header("Prefabs")]
     [SerializeField] private GameObject _cardFactoryPrefab;
 
-    private IFactory _cardFactory;
+    private IFactory _factory;
 
     public void StartNextGameMove()
     {
-        _cardManager.AddCardsToHand(_cardFactory, 5);
+        _cardManager.AddCardsToHand(_factory, 5);
     }
     public void StartFirstGameMove()
     {
-        _cardManager.AddCardsToHand(_cardFactory, 5);
-        _characterManager.SpawnPlayer();
-        _characterManager.SpawnEnemies();
+        _cardManager.SetTakingDeck(_cardGameLoader.LoadPlayerDeck());
+        _cardManager.AddCardsToHand(_factory, 5);
+        _characterManager.SpawnPlayer(_factory, _cardGameLoader.LoadPlayerData());
+        _characterManager.SpawnEnemies(_factory, _cardGameLoader.LoadEnemiesData());
     }
 
     private void CreateCardFactory()
     {
         GameObject cardFactoryGO = Instantiate(_cardFactoryPrefab, transform.parent);
-        _cardFactory = cardFactoryGO.GetComponent<IFactory>();
+        _factory = cardFactoryGO.GetComponent<IFactory>();
     }
     private void Start()
     {
-        StartNextGameMove();
+        StartFirstGameMove();
     }
     private void Awake() 
     {

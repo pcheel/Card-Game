@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface ICard
 {
+    public CardView cardView{get;}
     public void UseCard();
-    public void Inizialize(CardData data);
+    public void Inizialize(IFactory factory, GameObject cardPrefab, Transform parent, CardData data);
 }
